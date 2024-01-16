@@ -9,6 +9,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -19,6 +22,14 @@ public class ProductService {
     public ProductResponseDto save(final ProductRequestDto productRequest) {
         final Product product = productBuilder.toProduct(productRequest);
         return productBuilder.toProductResponseDto(repository.save(product));
+    }
+
+    @Transactional
+    public List<ProductResponseDto> getSpecificProduct(){
+        final List<Product> productList = repository.findAll();
+        return productList.stream()
+                .map(productBuilder::toProductResponseDto)
+                .toList();
     }
 
 }
