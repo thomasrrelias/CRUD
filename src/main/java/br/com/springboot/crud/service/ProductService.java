@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +25,16 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductResponseDto> getSpecificProduct(){
+    public List<ProductResponseDto> allProducts(){
         final List<Product> productList = repository.findAll();
         return productList.stream()
                 .map(productBuilder::toProductResponseDto)
                 .toList();
+    }
+
+    @Transactional
+    public ProductResponseDto specificProduct(UUID id){
+        return productBuilder.toProductResponseDto(repository.getReferenceById(id));
     }
 
 }

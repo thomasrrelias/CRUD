@@ -3,6 +3,7 @@ package br.com.springboot.crud.controllers;
 import br.com.springboot.crud.domain.dto.ProductRequestDto;
 import br.com.springboot.crud.domain.dto.ProductResponseDto;
 import br.com.springboot.crud.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +27,16 @@ public class ProductContoller {
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getAllProducts(){
-        return ResponseEntity.status(HttpStatus.OK).body(productService.getSpecificProduct());
+        return ResponseEntity.status(HttpStatus.OK).body(productService.allProducts());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getSpecificProduct(@PathVariable("id") UUID id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(productService.specificProduct(id));
+        } catch (  EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 
