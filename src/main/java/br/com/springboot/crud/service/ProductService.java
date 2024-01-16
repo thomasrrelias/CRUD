@@ -7,7 +7,9 @@ import br.com.springboot.crud.repository.ProductRepository;
 import br.com.springboot.crud.service.builder.ProductBuilder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -37,4 +39,20 @@ public class ProductService {
         return productBuilder.toProductResponseDto(repository.getReferenceById(id));
     }
 
+    @Transactional
+    public ProductResponseDto update(final Product newProdut) {
+        if (repository.existsById(newProdut.getIdProduct())) {
+            return productBuilder.toProductResponseDto(repository.save(newProdut));
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with the id: " + newProdut.getIdProduct());
+    }
+
+    @Transactional
+    public List<ProductResponseDto> deleteProduct(final UUID id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return allProducts();
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
 }
