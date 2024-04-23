@@ -26,7 +26,6 @@ public class ProductService {
         return productBuilder.toProductResponseDto(repository.save(product));
     }
 
-    @Transactional
     public List<ProductResponseDto> allProducts(){
         final List<Product> productList = repository.findAll();
         return productList.stream()
@@ -34,7 +33,6 @@ public class ProductService {
                 .toList();
     }
 
-    @Transactional
     public ProductResponseDto specificProduct(UUID id){
         return productBuilder.toProductResponseDto(repository.getReferenceById(id));
     }
@@ -47,7 +45,6 @@ public class ProductService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with the id: " + newProdut.getIdProduct());
     }
 
-    @Transactional
     public List<ProductResponseDto> deleteProduct(final UUID id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
